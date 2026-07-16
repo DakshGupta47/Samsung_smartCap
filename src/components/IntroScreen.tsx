@@ -11,7 +11,7 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
       {/* Spline 3D Model Background */}
       <div className="absolute inset-0 z-0 cursor-pointer">
         <Spline 
-          scene="https://prod.spline.design/TvmN3xgwK2cJPDDP/scene.splinecode" 
+          scene="https://prod.spline.design/MaBV5ai2obpheUFG/scene.splinecode" 
           onMouseDown={onEnter}
         />
       </div>
