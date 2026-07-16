@@ -1,4 +1,4 @@
-import React from 'react';
+
 import Spline from '@splinetool/react-spline';
 
 interface IntroScreenProps {

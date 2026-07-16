@@ -10,3 +10,5 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 .DS_Store
+scratch/
+public/models/office_room.glb

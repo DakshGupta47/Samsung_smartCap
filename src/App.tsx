@@ -19,6 +19,7 @@ export default function App() {
   const [inspectedAutomation, setInspectedAutomation] = useState<Automation | null>(null);
   const [appliances, setAppliances] = useState(initialAppliances);
   const [automations, setAutomations] = useState(initialAutomations);
+  const [scannedModelUrl, setScannedModelUrl] = useState('/models/appartement.glb');
 
   const handleToggleAutomation = (id: string) => {
     setAutomations((prev) => prev.map((auto) => (auto.id === id ? { ...auto, active: !auto.active } : auto)));
@@ -57,12 +58,18 @@ export default function App() {
         <Home3D
           appliances={appliances}
           onSelectAppliance={setInspectedCard}
+          initialModelUrl={scannedModelUrl}
         />
       )}
       {/* TODO(kiri): scan result URL is discarded, not wired to Home3D */}
       {activeTab === 'kiri' && (
         <div className="max-w-3xl mx-auto py-6">
-          <KiriScanner onScanComplete={() => setActiveTab('3dhome')} />
+          <KiriScanner onScanComplete={(url: string) => {
+            if (url && url !== 'https://www.kiriengine.app/webapp/') {
+              setScannedModelUrl(url);
+            }
+            setActiveTab('3dhome');
+          }} />
         </div>
       )}
       {activeTab === 'chatbot' && <Chatbot />}
