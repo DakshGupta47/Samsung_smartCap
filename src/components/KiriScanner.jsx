@@ -1,3 +1,7 @@
+// VITE_-prefixed env vars are baked into the client bundle at build time, so
+// this key is visible in the shipped JS via devtools — known limitation, not
+// a bug. A server-side proxy is the real fix if this key needs genuine
+// protection; tracked as a follow-up, not being done now.
 import { useMemo, useState } from 'react';
 import { Camera, CheckCircle2, ImagePlus, Sparkles, UploadCloud } from 'lucide-react';
 
