@@ -15,7 +15,6 @@ import { IntroScreen } from './components/IntroScreen';
 export default function App() {
   const [showIntro, setShowIntro] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
-  const [isNightMode, setIsNightMode] = useState(false);
   const [inspectedCard, setInspectedCard] = useState<Appliance | null>(null);
   const [inspectedAutomation, setInspectedAutomation] = useState<Automation | null>(null);
   const [appliances, setAppliances] = useState(initialAppliances);
@@ -57,8 +56,6 @@ export default function App() {
       {activeTab === '3dhome' && (
         <Home3D
           appliances={appliances}
-          isNightMode={isNightMode}
-          onToggleNightMode={() => setIsNightMode(!isNightMode)}
           onSelectAppliance={setInspectedCard}
         />
       )}
