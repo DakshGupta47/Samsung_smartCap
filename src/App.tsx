@@ -22,6 +22,7 @@ export default function App() {
   const [appliances, setAppliances] = useState(initialAppliances);
   const [automations, setAutomations] = useState(initialAutomations);
   const [dashboardNotice, setDashboardNotice] = useState<{ message: string; tone: 'success' | 'warning' } | null>(null);
+  const [scannedModelUrl, setScannedModelUrl] = useState('/models/appartement.glb');
 
   const COACH_AGENT_FAILURE_NOTICE = "Couldn't verify live specs — using general guidance.";
 
@@ -150,12 +151,18 @@ export default function App() {
         <Home3D
           appliances={appliances}
           onSelectAppliance={setInspectedCard}
+          initialModelUrl={scannedModelUrl}
         />
       )}
       {/* TODO(kiri): scan result URL is discarded, not wired to Home3D */}
       {activeTab === 'kiri' && (
         <div className="max-w-3xl mx-auto py-6">
-          <KiriScanner onScanComplete={() => setActiveTab('3dhome')} />
+          <KiriScanner onScanComplete={(url: string) => {
+            if (url && url !== 'https://www.kiriengine.app/webapp/') {
+              setScannedModelUrl(url);
+            }
+            setActiveTab('3dhome');
+          }} />
         </div>
       )}
       {activeTab === 'chatbot' && <Chatbot appliances={appliances} automations={automations} />}
