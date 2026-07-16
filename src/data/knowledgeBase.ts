@@ -49,7 +49,7 @@ export const knowledgeBase: KnowledgeChunk[] = [
     topic: 'navigation',
     title: 'App Sections & Navigation',
     content:
-      'SmartCap has five main sections accessible from the bottom navigation bar: Dashboard (energy monitoring and appliance control), Energy Rank (XP rewards and achievements), 3D Home (interactive WebGL apartment view), Kiri Scan (photo-to-3D room scanning), and Chammak (this chatbot assistant). Tap any icon to switch between sections instantly.',
+      'SmartCap has five main sections accessible from the bottom navigation bar: Dashboard (energy monitoring and appliance control), Energy Rank (XP rewards and achievements), 3D Home (interactive WebGL apartment view), Kiri Scan (photo-to-3D room scanning), and Galaxy.AI (this chatbot assistant). Tap any icon to switch between sections instantly.',
     keywords: ['navigate', 'navigation', 'tabs', 'sections', 'pages', 'bottom', 'bar', 'menu', 'switch', 'go', 'where'],
   },
 
@@ -359,9 +359,9 @@ export const knowledgeBase: KnowledgeChunk[] = [
   {
     id: 'faq_chatbot',
     topic: 'faq',
-    title: 'What can the Chammak chatbot help with?',
+    title: 'What can the Galaxy.AI chatbot help with?',
     content:
-      'The Chammak assistant can answer questions about: your connected appliances and their energy stats, how to use the dashboard, automation rules, AI insights, the 3D Home view and controls, the Energy Rank/rewards system, how to save energy and money, and general navigation tips. It cannot answer questions unrelated to the SmartCap app.',
+      'The Galaxy.AI assistant can answer questions about: your connected appliances and their energy stats, how to use the dashboard, automation rules, AI insights, the 3D Home view and controls, the Energy Rank/rewards system, how to save energy and money, and general navigation tips. It cannot answer questions unrelated to the SmartCap app.',
     keywords: ['chatbot', 'ai', 'assistant', 'bot', 'help', 'answer', 'can', 'what', 'smartcap', 'questions'],
   },
   {

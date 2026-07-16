@@ -93,10 +93,41 @@ function scoreChunk(queryTokens: string[], chunk: KnowledgeChunk): number {
 
 // ── Off-topic refusal pool ────────────────────────────────
 const REFUSALS = [
-  "I'm Chammak — I can only help with questions about the SmartCap app, like managing appliances, energy usage, automations, or the 3D home view. Try asking me something like \"How do I save money on my energy bill?\"",
+  "I'm Galaxy.AI — I can only help with questions about the SmartCap app, like managing appliances, energy usage, automations, or the 3D home view. Try asking me something like \"How do I save money on my energy bill?\"",
   "That's outside my area! I'm specialised in SmartCap — things like your energy dashboard, appliance controls, XP rewards, or 3D home features. What would you like to know about those?",
   "Hmm, that doesn't seem to be about SmartCap. I can answer questions about your connected appliances, automations, energy rank, or how to use the app. Give one of those a try!",
   "I'm built specifically to assist with SmartCap features. For general questions, a general-purpose assistant would serve you better. Ask me about your energy usage, appliances, or 3D home — I'll know!",
+];
+
+// ── Greeting responses ────────────────────────────────────
+const GREETINGS = [
+  "Hey there! 👋 I'm **Galaxy.AI**, your personal energy assistant. How can I help you today? You can ask me about your appliances, energy usage, automations, or anything about the SmartCap app!",
+  "Hello! 😊 Great to see you! I'm **Galaxy.AI** — here to help you manage your smart home energy. What would you like to know?",
+  "Hi! 👋 Welcome to Galaxy.AI! I can help with appliance controls, energy stats, automations, XP rewards, and more. What's on your mind?",
+  "Hey! 😄 Good to have you here. I'm **Galaxy.AI**, your smart energy companion. Feel free to ask me anything about the SmartCap app!",
+];
+
+// ── Identity responses ────────────────────────────────────
+const IDENTITY_RESPONSES = [
+  "I'm **Galaxy.AI** ⚡ — a smart assistant built into the SmartCap app by Samsung! I'm powered by a RAG (Retrieval-Augmented Generation) engine and specialised in helping you manage your connected home.\n\nI can help you with:\n• 🏠 Appliance controls & monitoring\n• ⚡ Energy usage & saving tips\n• 🤖 Automations & schedules\n• 🏆 XP rewards & energy ranking\n• 🔲 3D home view navigation\n\nWhat would you like to explore?",
+  "Great question! I'm **Galaxy.AI** 🤖 — your personal energy assistant inside the SmartCap app. I'm designed to help Samsung SmartCap users understand their energy consumption, control appliances, set up automations, and get the most out of the app.\n\nThink of me as your always-available smart home guide! What can I help you with?",
+  "I'm **Galaxy.AI** ⚡, an intelligent assistant built for the SmartCap app. My job is to make your smart home experience effortless — whether that's tracking energy usage, toggling devices, or earning XP rewards.\n\nAsk me anything about the SmartCap app and I'll do my best to help!",
+];
+
+// ── Greeting & identity pattern matchers ──────────────────
+const GREETING_PATTERNS = [
+  /^(hi|hey|hello|hiya|howdy|heya|sup|what'?s up|whats up)\b/i,
+  /^good\s+(morning|afternoon|evening|night|day)\b/i,
+  /^(greetings|salutations|namaste|hola|bonjour|ciao|yo)\b/i,
+];
+
+const IDENTITY_PATTERNS = [
+  /\b(who|what)\s+(are|is|r)\s+(you|u)\b/i,
+  /\b(tell|describe)\s+(me\s+)?(about\s+)?your(self)?\b/i,
+  /\b(what('?s| is)\s+your\s+(name|purpose|role|function))\b/i,
+  /\b(introduce\s+your(self)?)\b/i,
+  /\b(are\s+you\s+(a\s+)?(bot|robot|ai|assistant|human))\b/i,
+  /\b(what\s+(can|do)\s+you\s+do)\b/i,
 ];
 
 // ── Response synthesis ────────────────────────────────────
@@ -136,7 +167,28 @@ export interface RAGResult {
 }
 
 export function ragQuery(userQuery: string): RAGResult {
-  const queryTokens = tokenise(userQuery);
+  const trimmedQuery = userQuery.trim();
+  const queryTokens = tokenise(trimmedQuery);
+
+  // ── Intent Layer 0: Greeting detection ───────────────
+  if (GREETING_PATTERNS.some((p) => p.test(trimmedQuery))) {
+    return {
+      answer: GREETINGS[Math.floor(Math.random() * GREETINGS.length)],
+      sources: [],
+      confidence: 1,
+      isOffTopic: false,
+    };
+  }
+
+  // ── Intent Layer 0: Identity detection ───────────────
+  if (IDENTITY_PATTERNS.some((p) => p.test(trimmedQuery))) {
+    return {
+      answer: IDENTITY_RESPONSES[Math.floor(Math.random() * IDENTITY_RESPONSES.length)],
+      sources: [],
+      confidence: 1,
+      isOffTopic: false,
+    };
+  }
 
   // ── Guardrail Layer 1: Domain vocabulary check ───────
   const domainHits = queryTokens.filter((t) => DOMAIN_VOCAB.has(t)).length;

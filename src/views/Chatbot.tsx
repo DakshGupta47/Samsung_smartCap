@@ -27,7 +27,7 @@ const SUGGESTIONS = [
 const WELCOME: Message = {
   id: 'welcome',
   role: 'bot',
-  text: "Hi! I'm **Chammak** ⚡ — your personal energy assistant.\n\nI can help you with anything about the SmartCap app: appliance controls, energy stats, automations, 3D home view, rewards, and more.\n\nWhat would you like to know?",
+  text: "Hi! I'm **Galaxy.AI** ⚡ — your personal energy assistant.\n\nI can help you with anything about the SmartCap app: appliance controls, energy stats, automations, 3D home view, rewards, and more.\n\nWhat would you like to know?",
   timestamp: new Date(),
 };
 
@@ -124,7 +124,7 @@ export function Chatbot() {
           </div>
           <div>
             <h1 className="text-xl font-black text-white tracking-wide uppercase leading-none">
-              Chammak
+              Galaxy.AI
             </h1>
             <span className="text-[10px] font-bold text-[#2ECC71] uppercase tracking-widest flex items-center gap-1">
               <span className="w-1.5 h-1.5 bg-[#2ECC71] rounded-full inline-block animate-pulse" />
@@ -274,7 +274,7 @@ export function Chatbot() {
 
       {/* ── Guardrail disclaimer ─────────────────────────── */}
       <p className="text-center text-[9px] font-bold text-slate-400 uppercase tracking-widest pt-2">
-        Chammak · Only answers about this app · Guardrails active
+        Galaxy.AI · Only answers about this app · Guardrails active
       </p>
 
       {/* Dot-bounce keyframes injected inline */}
