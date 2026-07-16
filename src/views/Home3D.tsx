@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles} from 'lucide-react';
+import { Sparkles, Moon, Sun } from 'lucide-react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -13,7 +13,7 @@ interface Home3DProps {
   onSelectAppliance?: React.Dispatch<React.SetStateAction<Appliance | null>>;
 }
 
-export function Home3D({ appliances, isNightMode, onSelectAppliance: _onSelectAppliance }: Home3DProps) {
+export function Home3D({ appliances, isNightMode, onToggleNightMode, onSelectAppliance }: Home3DProps) {
   const [globalModelUrl, setGlobalModelUrl] = useState<string>('/models/appartement.glb');
   const [globalCustomManager, setGlobalCustomManager] = useState<any>(null);
   const [sceneTheme, setSceneTheme] = useState<'midnight' | 'sunrise' | 'grey'>('midnight');
@@ -38,7 +38,7 @@ export function Home3D({ appliances, isNightMode, onSelectAppliance: _onSelectAp
           </h1>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {(['midnight', 'sunrise', 'grey'] as const).map((theme) => (
             <button
               key={theme}
@@ -50,6 +50,12 @@ export function Home3D({ appliances, isNightMode, onSelectAppliance: _onSelectAp
               {theme === 'midnight' ? 'Midnight' : theme === 'sunrise' ? 'sunrise' : 'grey'}
             </button>
           ))}
+          <button
+            onClick={onToggleNightMode}
+            className="w-11 h-11 bg-white border-4 border-[#2D3436] rounded-full flex items-center justify-center shadow-[0_4px_0_0_#2D3436] hover:translate-y-1 hover:shadow-none transition-all"
+          >
+            {isNightMode ? <Sun className="w-5 h-5 text-[#F1C40F]" /> : <Moon className="w-5 h-5 text-[#3498DB]" />}
+          </button>
         </div>
       </header>
 
@@ -74,12 +80,27 @@ export function Home3D({ appliances, isNightMode, onSelectAppliance: _onSelectAp
         </div>
       </div>
 
-      {/* Legend Map */}
-      <div className="bg-white border-4 border-[#2D3436] rounded-2xl p-4 shadow-[0_6px_0_0_#2D3436] flex justify-center gap-6 text-sm font-black uppercase text-slate-600">
+      {/* Legend + Appliance Inspect Row */}
+      <div className="bg-white border-4 border-[#2D3436] rounded-2xl p-4 shadow-[0_6px_0_0_#2D3436] flex flex-wrap items-center justify-center gap-6 text-sm font-black uppercase text-slate-600">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-[#2ECC71] animate-pulse shadow-[0_0_8px_rgba(46,204,113,0.7)]"></div> Our House
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {appliances.map((app) => {
+            const Icon = app.icon;
+            return (
+              <button
+                key={app.id}
+                onClick={() => onSelectAppliance?.(app)}
+                title={app.name}
+                className={`w-10 h-10 bg-white border-4 border-[#2D3436] rounded-xl flex items-center justify-center shadow-[0_4px_0_0_#2D3436] hover:translate-y-1 hover:shadow-none transition-all ${
+                  app.status === 'ON' ? 'opacity-100' : 'opacity-50'
+                }`}
+              >
+                <Icon className="w-5 h-5" style={{ color: app.accent }} />
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -273,8 +294,9 @@ function ThreeDViewEngine({ modelUrl, customManager, onModelChange, background }
     }
 
     // 6. Animation Loop / Render Cycle
+    let frameId: number;
     const animate = () => {
-      requestAnimationFrame(animate);
+      frameId = requestAnimationFrame(animate);
       controls.update();
       renderer.render(scene, camera);
     };
@@ -282,6 +304,7 @@ function ThreeDViewEngine({ modelUrl, customManager, onModelChange, background }
 
     // Cleanup
     return () => {
+      cancelAnimationFrame(frameId);
       resizeObserver.disconnect();
       renderer.dispose();
     };

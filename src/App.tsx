@@ -62,6 +62,7 @@ export default function App() {
           onSelectAppliance={setInspectedCard}
         />
       )}
+      {/* TODO(kiri): scan result URL is discarded, not wired to Home3D */}
       {activeTab === 'kiri' && (
         <div className="max-w-3xl mx-auto py-6">
           <KiriScanner onScanComplete={() => setActiveTab('3dhome')} />
