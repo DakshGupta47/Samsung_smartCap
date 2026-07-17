@@ -59,7 +59,10 @@ export interface Insight {
   id: number;
   title: string;
   desc: string;
-  saving: string;
+  // Omitted (not a placeholder string) until a real ₹/kWh tariff rate exists —
+  // see CLAUDE.md. The UI only renders the "Potential Saving" badge when this
+  // is set, so no card shows a fabricated figure in the meantime.
+  saving?: string;
   icon: LucideIcon;
   color: string;
 }
@@ -82,6 +85,20 @@ export interface DiscoverProduct {
   accent: string;
   specs: string[];
   url: string;
+  // Which of the user's real measured appliances (Appliance.id) this product
+  // would replace — lets the Discover card show that appliance's real
+  // weeklyKwh next to estimatedWeeklySavingsKwh below.
+  matchesApplianceId: string;
+  // DELIBERATE EXCEPTION to this repo's "never invent kWh/watts/₹" rule
+  // (CLAUDE.md's Hard Rules) — explicitly requested and confirmed by the
+  // project owner for this feature only, after two rounds of being offered
+  // real alternatives (an ISEER-formula estimate for the AC; a live Coach
+  // Agent lookup scaled against real weeklyKwh, which is what this replaced —
+  // see git history). Neither Fridge nor Washer have any efficiency/wattage
+  // figure in their published specs at all (capacity/features only), so no
+  // real number could be derived for them regardless. Hardcoded, not
+  // measured, not AI-estimated — do not present this as fact elsewhere.
+  estimatedWeeklySavingsKwh: number;
 }
 
 // ─────────────────────────────────────────────────────────────

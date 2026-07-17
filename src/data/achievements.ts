@@ -9,11 +9,15 @@ export interface AchievementDef {
   id: string;
   title: string;
   desc: string;
-  check: (history: MatchHistoryEntry[]) => boolean;
+  // upgradedCount = how many Discover products the user has self-reported
+  // upgrading to (src/views/Discover.tsx) — 0 for the 3 match-based checks
+  // below, which ignore it entirely.
+  check: (history: MatchHistoryEntry[], upgradedCount: number) => boolean;
 }
 
-// Every achievement is a boolean computed from real match-history state —
-// no fabricated stats, no static "done: true" flags.
+// Every achievement is a boolean computed from real state — either match
+// history or a real (if self-reported) upgrade count. No fabricated stats,
+// no static "done: true" flags.
 export const ACHIEVEMENT_DEFINITIONS: AchievementDef[] = [
   {
     id: 'zero_combos',
@@ -44,5 +48,11 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDef[] = [
       const previousBest = Math.min(...history.slice(0, -1).map((m) => m.finalScoreKwh));
       return latest.finalScoreKwh < previousBest;
     },
+  },
+  {
+    id: 'home_upgrader',
+    title: 'Home Upgrader',
+    desc: 'Self-reported: upgraded to a featured Samsung product from the Discover tab.',
+    check: (_history, upgradedCount) => upgradedCount > 0,
   },
 ];

@@ -25,6 +25,12 @@ import type {
 export const CONTROL_POINTS_PER_ROUND = 2;
 export const XP_PER_KWH = 50;
 
+// One-time bonus for self-reporting a real-world appliance upgrade from the
+// Discover tab (src/views/Discover.tsx). Unlike XP_PER_KWH, this has no kWh
+// to derive from — there's no purchase/verification backend, so this is
+// entirely self-reported (honor system), clearly labeled as such in the UI.
+export const UPGRADE_BONUS_XP = 1000;
+
 // Average of the two real measured overlap ratios: 6,777W/4,700W and 6,703W/4,700W
 // (laundry_stagger's own evidence text) — a ~43.4% penalty, not rounded further.
 export const COMBO_PENALTY_MULTIPLIER = (6777 / 4700 + 6703 / 4700) / 2;

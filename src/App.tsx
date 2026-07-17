@@ -30,11 +30,22 @@ export default function App() {
   const [matchState, setMatchState] = useState<MatchState>(NOT_STARTED_MATCH);
   const [matchHistory, setMatchHistory] = useState<MatchHistoryEntry[]>([]);
   const [hasSeenTutorial, setHasSeenTutorial] = useState(false);
+  // Which Discover products the user has self-reported upgrading to (honor
+  // system — no purchase/verification backend exists). A Set so re-reporting
+  // the same product is a no-op, not a repeatable XP farm.
+  const [upgradedProductIds, setUpgradedProductIds] = useState<Set<string>>(new Set());
   // Cards deleted while their background Coach Agent lookup is still in
   // flight must not come back to life (or gain orphaned automations) once
   // that lookup resolves — a ref survives across renders without needing to
   // be a dependency of the async resolver below.
   const deletedCardIdsRef = useRef(new Set<string>());
+
+  const handleReportUpgrade = (productId: string) => {
+    setUpgradedProductIds((prev) => {
+      if (prev.has(productId)) return prev;
+      return new Set(prev).add(productId);
+    });
+  };
 
   const handleMatchComplete = (entry: MatchHistoryEntry) => {
     setMatchHistory((prev) => [...prev, entry]);
@@ -267,7 +278,7 @@ export default function App() {
           onTutorialSeen={() => setHasSeenTutorial(true)}
         />
       )}
-      {activeTab === 'rank' && <EnergyRank matchHistory={matchHistory} />}
+      {activeTab === 'rank' && <EnergyRank matchHistory={matchHistory} upgradedCount={upgradedProductIds.size} />}
       {activeTab === '3dhome' && (
         <Home3D
           appliances={appliances}
@@ -286,7 +297,13 @@ export default function App() {
           }} />
         </div>
       )}
-      {activeTab === 'discover' && <Discover />}
+      {activeTab === 'discover' && (
+        <Discover
+          appliances={appliances}
+          upgradedProductIds={upgradedProductIds}
+          onReportUpgrade={handleReportUpgrade}
+        />
+      )}
       {activeTab === 'chatbot' && <Chatbot appliances={appliances} automations={automations} />}
 
       {/* FULL APPLIANCE INSPECTION MODAL */}

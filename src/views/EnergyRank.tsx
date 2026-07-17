@@ -2,13 +2,20 @@ import { Trophy, Zap, Gamepad2, Medal, CheckCircle2, Box } from 'lucide-react';
 import type { MatchHistoryEntry } from '../types';
 import { deriveRankProgress } from '../data/ranks';
 import { ACHIEVEMENT_DEFINITIONS } from '../data/achievements';
+import { UPGRADE_BONUS_XP } from '../utils/gameEngine';
 
 interface EnergyRankProps {
   matchHistory: MatchHistoryEntry[];
+  // How many Discover products the user has self-reported upgrading to
+  // (App.tsx's upgradedProductIds.size) — real, but self-reported, not
+  // verified. Adds UPGRADE_BONUS_XP per upgrade on top of match-earned XP.
+  upgradedCount: number;
 }
 
-export function EnergyRank({ matchHistory }: EnergyRankProps) {
-  const cumulativeXp = matchHistory.reduce((sum, m) => sum + m.xpEarned, 0);
+export function EnergyRank({ matchHistory, upgradedCount }: EnergyRankProps) {
+  const matchXp = matchHistory.reduce((sum, m) => sum + m.xpEarned, 0);
+  const bonusXp = upgradedCount * UPGRADE_BONUS_XP;
+  const cumulativeXp = matchXp + bonusXp;
   const totalKwhSaved = matchHistory.reduce((sum, m) => sum + m.totalKwhSaved, 0);
   const matchesPlayed = matchHistory.length;
   const bestScore = matchesPlayed > 0 ? Math.min(...matchHistory.map((m) => m.finalScoreKwh)) : null;
@@ -68,6 +75,11 @@ export function EnergyRank({ matchHistory }: EnergyRankProps) {
         <p className="text-center text-xs font-bold text-slate-500 mt-3">
           {nextTier ? `${xpToNext?.toLocaleString()} XP remaining to unlock ${nextTier.name}` : 'Top rank reached!'}
         </p>
+        {bonusXp > 0 && (
+          <p className="text-center text-xs font-bold text-[#9B59B6] mt-1">
+            Includes {bonusXp.toLocaleString()} bonus XP from {upgradedCount} self-reported upgrade{upgradedCount === 1 ? '' : 's'} (Discover tab, honor system)
+          </p>
+        )}
       </div>
 
       {/* Achievements — booleans checked against real match state only */}
@@ -75,7 +87,7 @@ export function EnergyRank({ matchHistory }: EnergyRankProps) {
         <h2 className="text-2xl font-black uppercase text-[#2D3436] mb-6">Achievements</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {ACHIEVEMENT_DEFINITIONS.map((ach) => {
-            const done = ach.check(matchHistory);
+            const done = ach.check(matchHistory, upgradedCount);
             return (
               <div
                 key={ach.id}

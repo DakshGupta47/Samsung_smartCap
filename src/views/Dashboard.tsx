@@ -286,9 +286,11 @@ export function Dashboard({
                   {insight.title}
                 </h3>
                 <p className="text-sm font-bold text-slate-600 mb-3">{insight.desc}</p>
-                <span className="bg-slate-100 border-2 border-slate-200 px-3 py-1 rounded-lg text-xs font-black text-slate-500">
-                  Potential Saving: <span className="text-[#2ECC71]">{insight.saving}</span>
-                </span>
+                {insight.saving && (
+                  <span className="bg-slate-100 border-2 border-slate-200 px-3 py-1 rounded-lg text-xs font-black text-slate-500">
+                    Potential Saving: <span className="text-[#2ECC71]">{insight.saving}</span>
+                  </span>
+                )}
               </div>
             ))}
           </div>
